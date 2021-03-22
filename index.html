@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JPEGwithALPHA</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+}
+body {
+  padding: 30px;
+  background: url(./4321133_m.jpg) repeat-y 50% 0% / 100%;
+}
+h2 {
+  font-size: 18px;
+  color: #FFF;
+  font-style: normal;
+  font-family: sans-serif;
+  font-weight: 500;
+}
+h2 a {
+  color: #FFF;
+}
+img, canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.img {
+  width: 100%;
+  max-width: 720px;
+  margin: 50px auto;
+}
+
+</style>
+</head>
+<body>
+
+
+<div class="img">
+  <h2>32bit PNG (3.78MB)</h2>
+  <img src="app32.png" alt="" width='1920' height='1952'>
+</div>
+
+<div class="img">
+  <h2>8bit PNG (pngquant+zopflipng / 958KB)</h2>
+  <img src="app8.png" alt="" width='1920' height='1952'>
+</div>
+
+<div class="img">
+  <h2>SVG (<a href='http://defghi1977.html.xdomain.jp/tech/png2svgjpg/png2svgjpg.htm'>透過PNGをSVG+JPGに変換するスクリプト使用 755KB</a>)</h2>
+  <img src="app.png.svg" alt="" width='1920' height='1952'>
+</div>
+
+<div class="img">
+  <h2>JPEG (354KB)</h2>
+  <img src="app.jpg" alt="" width='1920' height='1952'>
+</div>
+
+<div class="img">
+  <h2>アルファマスクPNG (12.5KB)</h2>
+  <img src="app-alpha.png" alt="" width='1920' height='1952'>
+</div>
+
+<div class="img">
+  <h2>JPEG+アルファマスク</h2>
+  <canvas class='app-img' width='1920' height='1952'></canvas>
+<script>
+(function(){
+  const canvas = document.querySelector('.app-img');
+  const w = canvas.width, h = canvas.height;
+  const ctxa = canvas.cloneNode().getContext('2d');
+  const alpha = new Image();
+  alpha.onload = function(){
+    ctxa.drawImage(alpha, 0, 0, w, h);
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = function(){
+      ctx.drawImage(img, 0, 0, w, h);
+      const da = ctxa.getImageData(0, 0, w, h).data;
+      const idata = ctx.getImageData(0, 0, w, h);
+      const di = idata.data;
+      const length = w * h * 4;
+      for (let p = 0; p < length; p += 4) {
+        di[p + 3] = da[p];
+      }
+      ctx.putImageData(idata, 0, 0);
+    };
+    img.src = 'app.jpg';
+  };
+  alpha.src = 'app-alpha.png';
+})();
+</script>
+</div>
+</body>
+</html>
